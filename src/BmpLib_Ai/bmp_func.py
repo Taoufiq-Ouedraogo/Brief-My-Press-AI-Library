@@ -208,7 +208,7 @@ class BMP_Object:
             audio_buffer = BytesIO()
             tts.write_to_fp(audio_buffer)
             audio_buffer.seek(0)  
-            print("--------- gtts fin ---------")
+            #print("--------- gtts fin ---------")
             return audio_buffer
             
         except Exception as e:
