@@ -1,4 +1,4 @@
-from .bmp_lib import *
+from .bmp_func import bmp_summaries_and_audio
 
 
 
