@@ -1,3 +1,4 @@
 .DS_Store
 bmp_lib/.DS_Store
 .env
+bmp_lib/__pycache__/
