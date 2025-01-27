@@ -78,7 +78,7 @@ def spacyExtractiveSummarizer(text, percentage=0.4):
     summary = nlargest(n = len_tokens, iterable = sent_scores,key=sent_scores.get)    
     final_summary = [word.text for word in summary]    
     summary=" ".join(final_summary) 
-    print("--------- Resume Extractif OK ---------")   
+    #print("--------- Resume Extractif OK ---------")   
     return summary
 
 
@@ -93,7 +93,7 @@ def HFabstractiveSummarizer(text):
 
     summary = abstractive_summarizer(text)
     summary = summary[0]['summary_text']
-    print("--------- Resume Abstractif OK ---------")
+    #print("--------- Resume Abstractif OK ---------")
     return summary
 
 
@@ -116,33 +116,31 @@ def update_historique(id, text, extractiveSummary, abstractiveSummary, extractiv
 
 
 
-def bmp_summaries_and_audio(text, mediaID):
+def get_BMP_Article_Object(text, mediaID):
     assert mediaID in MEDIAS
     
-    print("--------- before creation ArticleItem ---------")
-    articleItem = ArticleItem(mediaID, text)
-    extractiveSummary, abstractiveSummary = articleItem.get_summaries()
-    extractiveAudioBuffer, abstractiveAudioBuffer = articleItem.get_audios()
+    #print("--------- before creation ArticleItem ---------")
+    obj = BMP_Object(mediaID, text)
+    extractiveSummary, abstractiveSummary = obj.get_summaries()
+    extractiveAudioBuffer, abstractiveAudioBuffer = obj.get_audios()
     dico_ = {'extractiveSummary': extractiveSummary, 'abstractiveSummary': abstractiveSummary,
             'extractiveAudioBuffer': extractiveAudioBuffer, 'abstractiveAudioBuffer': abstractiveAudioBuffer}
     
-    print("--------- get element of bmp_summaries_and_audio ---------")
-    print("--------- update_historique ---------")
+    #print("--------- get element of bmp_summaries_and_audio ---------")
+    #print("--------- update_historique ---------")
     #update_historique(id, text, extractiveSummary, abstractiveSummary, extractiveAudioBuffer, abstractiveAudioBuffer)
 
-    return articleItem, 
+    return obj
 
 
 
 ###################################################################################
 
 
-class ArticleItem:
+class BMP_Object:
     def __init__(self, mediaID, text, extr_model=spacyExtractiveSummarizer, abs_model=HFabstractiveSummarizer):
-        #xl_file = 'https://raw.githubusercontent.com/Taoufiq-Ouedraogo/pfe_brief_my_press_AI/main/Code/WEBAPI/ressources/historique_articles.xlsx'
-        #df = pd.read_excel(xl_file)
-        self.n = 0
         self.content = text
+
         self.extractiveSummary = None
         self.abstractiveSummary = None
 
@@ -150,7 +148,7 @@ class ArticleItem:
         self.abstractiveAudioBuffer = None
         
         # Charger le modèle et le tokenizer pour le chatbot
-        self.model, self.tokenizer = load("mlx-community/Llama-3.2-1B-Instruct-4bit")
+        self.chat_model, self.tokenizer = load("mlx-community/Llama-3.2-1B-Instruct-4bit")
 
         ######## Get Summaries ########
         if text and extr_model:
@@ -163,7 +161,7 @@ class ArticleItem:
         self.generate_abstractiveSummaryAudio()
 
 
-    #################### Getters ####################
+    #################### Getters & Chatbot ####################
 
     def get_summaries(self):
         return self.extractiveSummary, self.abstractiveSummary
@@ -171,43 +169,6 @@ class ArticleItem:
     def get_audios(self):
         return self.extractiveAudioBuffer, self.abstractiveAudioBuffer
     
-    #################### Summary to Audio ####################
-
-    def generate_abstractiveSummaryAudio(self):
-        filename = f'abstractiveAudio_{self.n}.mp3'
-        audio_buffer = self.summary2speech(self.abstractiveSummary, filename=filename)
-        if audio_buffer:
-            self.abstractiveAudioBuffer = audio_buffer
-            print("--------- Audio Resume Abstractif OK ---------")
-
-    def generate_extractiveSummaryAudio(self):
-        filename = f'extractiveAudio_{self.n}.mp3'
-        audio_buffer = self.summary2speech(self.extractiveSummary, filename=filename)
-        if audio_buffer:
-            self.extractiveAudioBuffer = audio_buffer
-            print("--------- Audio Resume Extractif OK ---------")
-
-    def summary2speech(self, text_, filename=None):
-        print("--------- Debut text2speech ---------")
-        if not text_:
-            return None
-        try:
-            tts = gTTS(text_, lang='fr')
-            print("--------- gtts debut ---------")
-            if filename:
-                audio_buffer = BytesIO()
-                tts.write_to_fp(audio_buffer)
-                audio_buffer.seek(0)  
-                print("--------- gtts fin ---------")
-                return audio_buffer
-            
-        except Exception as e:
-            print(f"Une erreur est survenue : {e}")
-            return None
-    
-
-    #################### Chat Method ####################
-
     def chat_with_question(self, question):
         """
         Utilise le contenu de l'article pour générer une réponse à une question posée.
@@ -220,8 +181,39 @@ class ArticleItem:
             prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
 
         # Générer la réponse
-        response = generate(self.model, self.tokenizer, prompt=prompt, verbose=True)
+        response = generate(self.chat_model, self.tokenizer, prompt=prompt, verbose=True)
         return response
+    
+    #################### Summary to Audio ####################
 
+    def generate_abstractiveSummaryAudio(self):
+        audio_buffer = self.summary2speech(self.abstractiveSummary)
+        if audio_buffer:
+            self.abstractiveAudioBuffer = audio_buffer
+            #print("--------- Audio Resume Abstractif OK ---------")
+
+    def generate_extractiveSummaryAudio(self):
+        audio_buffer = self.summary2speech(self.extractiveSummary)
+        if audio_buffer:
+            self.extractiveAudioBuffer = audio_buffer
+            #print("--------- Audio Resume Extractif OK ---------")
+
+    def summary2speech(self, text_):
+        #print("--------- Debut text2speech ---------")
+        if not text_:
+            return None
+        try:
+            tts = gTTS(text_, lang='fr')
+            #print("--------- gtts debut ---------")
+            audio_buffer = BytesIO()
+            tts.write_to_fp(audio_buffer)
+            audio_buffer.seek(0)  
+            print("--------- gtts fin ---------")
+            return audio_buffer
+            
+        except Exception as e:
+            #print(f"Une erreur est survenue : {e}")
+            return None
+    
 
 
