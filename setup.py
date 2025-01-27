@@ -10,7 +10,8 @@ setup(
     packages=find_packages(),
     setup_requires=['setuptools-git-versioning'],
     install_requires=requirements,
-    python_requires='==3.10',
+    #  '==3.10'
+    python_requires='>=3.10,<3.11',           
     #url = github
     author="Taoufiq OUEDRAOGO",
     author_email="taoufiq.ouedraogo@edu.ece.fr",
