@@ -5,8 +5,9 @@ To install, tap:
 `pip install BmpLib-Ai`
 
 
-[GitHub](https://github.com/Taoufiq-Ouedraogo/Brief-My-Press-AI-Library)
+[GitHub Page](https://github.com/Taoufiq-Ouedraogo/Brief-My-Press-AI-Library)
 
+[Pypi Page](https://pypi.org/project/BmpLib-Ai/)
 
 
 [Tuto on how to publish python package](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
