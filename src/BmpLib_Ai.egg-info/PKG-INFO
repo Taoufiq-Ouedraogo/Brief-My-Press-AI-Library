@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: BmpLib_Ai
-Version: 0.0.7
+Version: 0.0.8
 Summary: This package implements all the logic of Brief My Press.AI
 Author-email: OUEDRAOGO Taoufiq <taoufiq.ouedraogo@icloud.com>
 License: Copyright (c) 2018 The Python Packaging Authority
@@ -25,7 +25,7 @@ License: Copyright (c) 2018 The Python Packaging Authority
 Project-URL: Homepage, https://github.com/Taoufiq-Ouedraogo/Brief-My-Press-AI-Library
 Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: OS Independent
-Requires-Python: <3.13,>=3.10
+Requires-Python: <3.11,>=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: setuptools
