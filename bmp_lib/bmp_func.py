@@ -9,12 +9,21 @@ from spacy.lang.fr.stop_words import STOP_WORDS
 from string import punctuation
 from heapq import nlargest
 
+from transformers import pipeline
+import os
+
+from mlx_lm import load, generate
+
+# Disable parallelism warnings from Hugging Face tokenizers
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 
 
 # gtts pandas spacy openpyxl wheel
 
 
 ###################################################################################
+
 
 
 def spacyExtractiveSummarizer(text, percentage=0.4):
@@ -68,7 +77,23 @@ def spacyExtractiveSummarizer(text, percentage=0.4):
     
     summary = nlargest(n = len_tokens, iterable = sent_scores,key=sent_scores.get)    
     final_summary = [word.text for word in summary]    
-    summary=" ".join(final_summary)    
+    summary=" ".join(final_summary) 
+    print("--------- Resume Extractif OK ---------")   
+    return summary
+
+
+
+
+def HFabstractiveSummarizer(text):
+
+    model1 = "facebook/bart-large-cnn"
+    model2 = "t5-small"
+    model3 = "Falconsai/text_summarization"
+    abstractive_summarizer = pipeline("summarization", model=model3)#, framework="pt")
+
+    summary = abstractive_summarizer(text)
+    summary = summary[0]['summary_text']
+    print("--------- Resume Abstractif OK ---------")
     return summary
 
 
@@ -94,17 +119,18 @@ def update_historique(id, text, extractiveSummary, abstractiveSummary, extractiv
 def bmp_summaries_and_audio(text, mediaID):
     assert mediaID in MEDIAS
     
+    print("--------- before creation ArticleItem ---------")
     articleItem = ArticleItem(mediaID, text)
     extractiveSummary, abstractiveSummary = articleItem.get_summaries()
     extractiveAudioBuffer, abstractiveAudioBuffer = articleItem.get_audios()
+    dico_ = {'extractiveSummary': extractiveSummary, 'abstractiveSummary': abstractiveSummary,
+            'extractiveAudioBuffer': extractiveAudioBuffer, 'abstractiveAudioBuffer': abstractiveAudioBuffer}
+    
+    print("--------- get element of bmp_summaries_and_audio ---------")
+    print("--------- update_historique ---------")
+    #update_historique(id, text, extractiveSummary, abstractiveSummary, extractiveAudioBuffer, abstractiveAudioBuffer)
 
-    ## 
-    update_historique(id, text, extractiveSummary, abstractiveSummary, extractiveAudioBuffer, abstractiveAudioBuffer)
-
-    return {'extractiveSummary': extractiveSummary, 
-            'abstractiveSummary': abstractiveSummary,
-            'extractiveAudioBuffer': extractiveAudioBuffer, 
-            'abstractiveAudioBuffer': abstractiveAudioBuffer}
+    return articleItem, 
 
 
 
@@ -112,14 +138,20 @@ def bmp_summaries_and_audio(text, mediaID):
 
 
 class ArticleItem:
-    def __init__(self, mediaID, text, extr_model=spacyExtractiveSummarizer, abs_model=None):
+    def __init__(self, mediaID, text, extr_model=spacyExtractiveSummarizer, abs_model=HFabstractiveSummarizer):
+        #xl_file = 'https://raw.githubusercontent.com/Taoufiq-Ouedraogo/pfe_brief_my_press_AI/main/Code/WEBAPI/ressources/historique_articles.xlsx'
+        #df = pd.read_excel(xl_file)
         self.n = 0
+        self.content = text
         self.extractiveSummary = None
         self.abstractiveSummary = None
 
         self.extractiveAudioBuffer = None
         self.abstractiveAudioBuffer = None
         
+        # Charger le modèle et le tokenizer pour le chatbot
+        self.model, self.tokenizer = load("mlx-community/Llama-3.2-1B-Instruct-4bit")
+
         ######## Get Summaries ########
         if text and extr_model:
             self.extractiveSummary = extr_model(text)
@@ -146,32 +178,50 @@ class ArticleItem:
         audio_buffer = self.summary2speech(self.abstractiveSummary, filename=filename)
         if audio_buffer:
             self.abstractiveAudioBuffer = audio_buffer
+            print("--------- Audio Resume Abstractif OK ---------")
 
     def generate_extractiveSummaryAudio(self):
         filename = f'extractiveAudio_{self.n}.mp3'
         audio_buffer = self.summary2speech(self.extractiveSummary, filename=filename)
         if audio_buffer:
             self.extractiveAudioBuffer = audio_buffer
+            print("--------- Audio Resume Extractif OK ---------")
 
     def summary2speech(self, text_, filename=None):
+        print("--------- Debut text2speech ---------")
         if not text_:
             return None
         try:
             tts = gTTS(text_, lang='fr')
+            print("--------- gtts debut ---------")
             if filename:
-                tts.save(filename)  # Sauvegarde l'audio dans un fichier
-                
                 audio_buffer = BytesIO()
                 tts.write_to_fp(audio_buffer)
                 audio_buffer.seek(0)  
-                print(f"Le fichier audio a été sauvegardé sous : {filename}")
+                print("--------- gtts fin ---------")
                 return audio_buffer
+            
         except Exception as e:
             print(f"Une erreur est survenue : {e}")
             return None
     
 
+    #################### Chat Method ####################
 
+    def chat_with_question(self, question):
+        """
+        Utilise le contenu de l'article pour générer une réponse à une question posée.
+        """
+        prompt = f"Voici un article :\n{self.content}\n\nQuestion : {question}\nRéponse :"
+        
+        # Appliquer le modèle
+        if hasattr(self.tokenizer, "apply_chat_template") and self.tokenizer.chat_template is not None:
+            messages = [{"role": "user", "content": prompt}]
+            prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+
+        # Générer la réponse
+        response = generate(self.model, self.tokenizer, prompt=prompt, verbose=True)
+        return response
 
 
 

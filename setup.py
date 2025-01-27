@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     setup_requires=['setuptools-git-versioning'],
     install_requires=requirements,
-    python_requires='>=3.9', 
+    python_requires='=3.10',
     #url = github
     author="Taoufiq OUEDRAOGO",
     author_email="taoufiq.ouedraogo@edu.ece.fr",
@@ -27,4 +27,4 @@ setup(
     }
 )
 
-#python setup.py sdist bdist_wheel
+#

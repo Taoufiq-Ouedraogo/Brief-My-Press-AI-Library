@@ -11,3 +11,4 @@ pandas
 ipykernel
 requests
 openpyxl
+mlx-lm
