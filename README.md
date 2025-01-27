@@ -86,6 +86,33 @@ print("Réponse :", response)
 
 
 
+___
+
+### 🔹 Résumé Extractif        
+
+- **Modèle** : `fr_core_news_sm` de [spaCy](https://spacy.io/models/fr#fr_core_news_sm).
+- **Fonctionnement** : Le modèle analyse le texte et extrait les phrases les plus significatives.
+
+
+
+### 🔹 Résumé Abstrait
+
+- **Modèle** : `Falconsai/text_summarization` de [Hugging Face](https://huggingface.co/Falconsai/text_summarization).
+- **Fonctionnement** : Génération d'un résumé condensé du texte en utilisant un modèle de résumé abstrait.
+
+
+### 🔹 Audio 
+
+- **Outil** : gTTS [Google Text-to-Speech](https://gtts.readthedocs.io/en/latest/).
+- **Fonctionnement** : Convertit les résumés extraits et abstraits en fichiers audio pour une écoute rapide.
+ 
+
+
+
+### 🔹 Chatbot            
+
+- **Modèle** : `mlx-community/Llama-3.2-1B-Instruct-4bit` de [Hugging Face](https://huggingface.co/mlx-community/Llama-3.2-1B-Instruct-4bit).
+- **Fonctionnement** : Permet d'interagir avec le contenu de l'article pour obtenir des réponses précises aux questions.
 
 
 
