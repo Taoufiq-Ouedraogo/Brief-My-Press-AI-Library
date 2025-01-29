@@ -3,3 +3,5 @@ bmp_lib/.DS_Store
 .env
 bmp_lib/__pycache__/
 test.ipynb
+.env
+env/

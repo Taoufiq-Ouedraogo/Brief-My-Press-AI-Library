@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "BmpLib_Ai"
-version = "0.0.8"
+version = "0.0.30"
 authors = [
   { name = "OUEDRAOGO Taoufiq", email = "taoufiq.ouedraogo@icloud.com" }
 ]
@@ -25,7 +25,7 @@ Homepage = "https://github.com/Taoufiq-Ouedraogo/Brief-My-Press-AI-Library"
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["BmpLib_Ai"]
-exclude = [".env", ".gitignore", "*.ipynb"]
+exclude = [".env", "env", ".gitignore", "*.ipynb", "src/BmpLib_Ai/__pycache__"]
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }

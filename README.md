@@ -9,13 +9,21 @@
 - **Playlists personnalisées** : Créez des collections audio de vos résumés préférés.
 - **Chatbot interactif** : Posez des questions sur un article et recevez des réponses adaptées.
 
+
 ## Installation
 
 Pour installer la bibliothèque, exécutez la commande suivante :
 
+- Pour une version sans chatBot
 ```python
-pip install BmpLib-Ai
+pip install BmpLib-Ai==0.0.25
 ```
+
+- Pour une version avec chatBot (seulement accessible sur macOS pour le moment):
+```python
+pip install BmpLib-Ai==0.0.26
+```
+
 
 [GitHub Page](https://github.com/Taoufiq-Ouedraogo/Brief-My-Press-AI-Library)
 

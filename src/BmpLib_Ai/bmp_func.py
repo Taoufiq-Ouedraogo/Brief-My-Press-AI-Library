@@ -1,25 +1,23 @@
 import os
 from gtts import gTTS
 from io import BytesIO
-import pandas as pd             
-import openpyxl
 
 import spacy
 from spacy.lang.fr.stop_words import STOP_WORDS
+from transformers import pipeline
+
 from string import punctuation
 from heapq import nlargest
 
-from transformers import pipeline
-import os
-
 from mlx_lm import load, generate
+
+# wheel twine, pandas, openpyxl
+#import pandas as pd             
+#import openpyxl
 
 # Disable parallelism warnings from Hugging Face tokenizers
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-
-
-# gtts pandas spacy openpyxl wheel
 
 
 ###################################################################################

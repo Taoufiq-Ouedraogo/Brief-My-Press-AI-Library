@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: BmpLib_Ai
-Version: 0.0.8
+Version: 0.0.30
 Summary: This package implements all the logic of Brief My Press.AI
 Author-email: OUEDRAOGO Taoufiq <taoufiq.ouedraogo@icloud.com>
 License: Copyright (c) 2018 The Python Packaging Authority
@@ -29,18 +29,17 @@ Requires-Python: <3.11,>=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: setuptools
-Requires-Dist: wheel
-Requires-Dist: twine
-Requires-Dist: ipywidgets
+Requires-Dist: tensorflow==2.18.0
+Requires-Dist: keras==3.8.0
 Requires-Dist: transformers
-Requires-Dist: openai
-Requires-Dist: python-dotenv
 Requires-Dist: spacy
-Requires-Dist: gTTS
-Requires-Dist: pandas
-Requires-Dist: ipykernel
-Requires-Dist: requests
-Requires-Dist: openpyxl
+Requires-Dist: click==8.1.7
+Requires-Dist: requests==2.31.0
+Requires-Dist: certifi==2024.12.14
+Requires-Dist: idna==3.10
+Requires-Dist: colorama==0.4.6
+Requires-Dist: charset-normalizer==3.4.1
+Requires-Dist: gTTS==2.5.3
 Requires-Dist: mlx-lm
 
 # BmpLib-Ai
@@ -54,13 +53,21 @@ Requires-Dist: mlx-lm
 - **Playlists personnalisées** : Créez des collections audio de vos résumés préférés.
 - **Chatbot interactif** : Posez des questions sur un article et recevez des réponses adaptées.
 
+
 ## Installation
 
 Pour installer la bibliothèque, exécutez la commande suivante :
 
+- Pour une version sans chatBot
 ```python
-pip install BmpLib-Ai
+pip install BmpLib-Ai==0.0.25
 ```
+
+- Pour une version avec chatBot (seulement accessible sur macOS pour le moment):
+```python
+pip install BmpLib-Ai==0.0.26
+```
+
 
 [GitHub Page](https://github.com/Taoufiq-Ouedraogo/Brief-My-Press-AI-Library)
 
